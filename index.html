@@ -15,55 +15,57 @@
     </style>
 </head>
 <body>
-
+    <div id="messageBox" class="jumbotron">
+        Please Log In.
+    </div>
     <div class="container">
         <div id="okta-login-container"></div>
     </div>
 
     <script type="text/javascript">
-  var oktaSignIn = new OktaSignIn({
-      baseUrl: "https://hawxservices.okta.com",
-      clientId: "0oa3ymf2hryoAMTtu697",
-    authParams: {
-      issuer: "https://hawxservices.okta.com/oauth2/default",
-      responseType: ['token', 'id_token'],
-      display: 'page'
-    }
-  });
+        var oktaSignIn = new OktaSignIn({
+            baseUrl: "https://hawxservices.okta.com",
+            clientId: "0oa3ymf2hryoAMTtu697",
+            authParams: {
+                issuer: "https://hawxservices.okta.com/oauth2/default",
+                responseType: ['token', 'id_token'],
+                display: 'page'
+            }
+        });
 
-  if (oktaSignIn.token.hasTokensInUrl()) {
-    oktaSignIn.token.parseTokensFromUrl(
-      // Interact with authentication server if they attempt to sign in.
-      function success(res) {
-        var accessToken = res[0];
-        var idToken = res[1];
+        if (oktaSignIn.token.hasTokensInUrl()) {
+            oktaSignIn.token.parseTokensFromUrl(
+                // Interact with authentication server if they attempt to sign in.
+                function success(res) {
+                    var accessToken = res[0];
+                    var idToken = res[1];
 
-        oktaSignIn.tokenManager.add('accessToken', accessToken);
-        oktaSignIn.tokenManager.add('idToken', idToken);
+                    oktaSignIn.tokenManager.add('accessToken', accessToken);
+                    oktaSignIn.tokenManager.add('idToken', idToken);
 
-        window.location.hash='';
-        },
-      function error(err) {
-        console.error(err);
-      }
-    );
-  } else {
-    oktaSignIn.session.get(function (res) {
-      // Let use know of active user sessin if they're still logged in.
-      if (res.status === 'ACTIVE') {
-        document.getElementById("messageBox").innerHTML = "Hello, " + res.login + "! You are *still* logged in! :)";
-        return;
+                    window.location.hash = '';
+                },
+                function error(err) {
+                    console.error(err);
+                }
+            );
+        } else {
+            oktaSignIn.session.get(function (res) {
+                // Let use know of active user sessin if they're still logged in.
+                if (res.status === 'ACTIVE') {
+                    document.getElementById("messageBox").innerHTML = "Hello, " + res.login + "! You are logged in already.";
+                    return;
+                }
+                // If the user is not logged in, then render new login widget.
+                oktaSignIn.renderEl(
+                    { el: '#okta-login-container' },
+                    function success(res) { },
+                    function error(err) {
+                        console.error(err);
+                    }
+                );
+            });
         }
-        // If the user is not logged in, then render new login widget.
-      oktaSignIn.renderEl(
-        { el: '#okta-login-container' },
-        function success(res) {},
-        function error(err) {
-          console.error(err);
-        }
-      );
-    });
-  }
     </script>
 
 </body>
