@@ -24,11 +24,10 @@
 
     <script type="text/javascript">
         var oktaSignIn = new OktaSignIn({
-            baseUrl: "https://hawxservices.okta.com",
-            clientId: "0oa3v1g16rL3tsyY6697",
-            clientSecret: "wljW2V77G91kpRWJaLor1FqigDN_63aM1RSWJbhr",
+            baseUrl: "https://portal.hawxservices.com",
+            clientId: "0oa3ymf2hryoAMTtu697",
             authParams: {
-                issuer: "https://hawxservices.okta.com/oauth2/v1/introspect",
+                issuer: "default",
                 responseType: ['token', 'id_token'],
                 display: 'page'
             }
@@ -45,7 +44,7 @@
                     oktaSignIn.tokenManager.add('accessToken', accessToken);
                     oktaSignIn.tokenManager.add('idToken', idToken);
 
-                    window.location.hash = '';
+                   
                 },
                 function error(err) {
                     console.error(err);
