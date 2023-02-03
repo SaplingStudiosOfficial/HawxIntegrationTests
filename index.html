@@ -23,11 +23,17 @@
     </div>
 
     <script type="text/javascript">
+
+        var prontoAPIToken = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIyNyIsImp0aSI6ImFjMjBiNGNhMTgyZmU0OTA2ZTUzNWY1NDMwNWUzZjAxMmFlM2MzNDI4Njg2OWFjY2ExNDc5YjJkZTRhMWU0NGE3MTc4YjFjY2MzMzEzMzJlIiwiaWF0IjoxNjc0MDAyNDc4LjQ4NTY2NywibmJmIjoxNjc0MDAyNDc4LjQ4NTY3LCJleHAiOjE5ODk2MjE2NzguNDQ1OTM5LCJzdWIiOiI0MTc4MzAwIiwic2NvcGVzIjpbInByb2ZpbGUtcmVhZCIsInByb2ZpbGUtd3JpdGUiLCJwcm9maWxlLWNvbnRhY3QiXX0.HM_Vywx50db1Zmt1fFrIIJHNO1GGmhfx3Hd6ATl0rWnD1K - mi7pI3yFOq8hEnOkiOlPYAJbsqfVmQQ5wOUzDg - vy_TWTHNdE1 - CfrklPWXlPBSmTeHQFwKFESd2QA - g2mRODbVGyGgXdAlRgWHZK196SQlpDf9XaErDHlINUcoy4tlvTk8Z2E_xszO9vLiuNeZwaynbyXl0_DbZj78RIsFj2TbCcTKJJEq5 - f - FhQbtv - b8Ak4ShW2SZipYze22aSZlwkq6r1h4tht7Ixcecl4DvIRq4EvK_CZXH4XgUh4gJpwMcAfFZ8Wiflc1Fq1AmGg5j8 - DSyXay6WRvyFGA0ZBn4bL8AjC4Jj0MxXQMjWsja3Kd460TkbZ3xynmcCK4GxnLczHMmJy98ldgN5HrYG4CZRDT1 - sV2 - sTlQXx89zlN3JgtnETajdyrDEbUZ6OzRMxiACTwr5PhXFAuVAmEKrvTp7wmHYmzpDmW0s0kdM87 - JouwXCG1Xp6iWoJiMApLqlkUoez9g2uelMAiQUJZVnUNe6zjkUOyd70rBa8o9mb3q_Z - Ai7ZPgLUhh3TfhVd0I0RyK - EImkvk2kQl_ZIQtc3PWt_DqGVKUQibT1Hbk_vZzTNRragtcmFffIF7LQoVZ6BOP9RbADLATDm4egMlIloX_UDV6xegAwx1jy_g';
+
+
+        //Uses Okta API to create a new sign in for the widget in screen.
         var oktaSignIn = new OktaSignIn({
             baseUrl: "https://portal.hawxservices.com",
-            clientId: "0oa3ymf2hryoAMTtu697",
+            clientId: "0oa41dz1jxtYvjPMl697",
+            redirectUri:"https://saplingstudiosofficial.github.io/HawxIntegrationTests/",
             authParams: {
-                issuer: "default",
+                issuer: "https://portal.hawxservices.com",
                 responseType: ['token', 'id_token'],
                 display: 'page'
             }
@@ -43,18 +49,45 @@
                     
                     oktaSignIn.tokenManager.add('accessToken', accessToken);
                     oktaSignIn.tokenManager.add('idToken', idToken);
-
-                   
+                    location.reload();
+                    
                 },
                 function error(err) {
                     console.error(err);
                 }
+                
             );
         } else {
             oktaSignIn.session.get(function (res) {
                 // Let use know of active user sessin if they're still logged in.
                 if (res.status === 'ACTIVE') {
-                    document.getElementById("messageBox").innerHTML = "Hello, " + res.login + "! You are logged in already.";
+
+
+                    //Uses Email to gain First Name, Last Name and Email
+                    var accountInfo = res.login.split(".");
+                    var accountInfoTwo = accountInfo[1].split("@");
+
+                    var firstName = accountInfo[0];
+                    var lastName = accountInfoTwo[0];
+
+                    document.getElementById("messageBox").innerHTML = "Hello, " + firstName + " " + lastName + "! You are logged in already.";
+
+                    //Creates pronto account using user information
+                    const options = {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            Authorization: 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIyNyIsImp0aSI6IjYyNWE0NmFiYTZmN2JmYzYyNTRhMWYyNTJlNmVhNGY1M2IwYTg2MjgwOTk3NGNhMjcwNDIxNjk0NDRkYjYxNmEyZDFlZTFhNWI1MmJkMjExIiwiaWF0IjoxNjc1NDEwOTYzLjAwMTE3OCwibmJmIjoxNjc1NDEwOTYzLjAwMTE3OSwiZXhwIjoxOTkxMDMwMTYyLjk3MTE2Mywic3ViIjoiNDE3ODMwMCIsInNjb3BlcyI6WyJtZXNzYWdlcy13cml0ZSIsImNoYXRzLXdyaXRlIiwib3JnLW1lc3NhZ2VzLXdyaXRlIiwib3JnLWNoYXRzLXJlYWQiLCJtZXNzYWdlcy1yZWFkIiwidXNlcnMtcmVhZCIsIm9yZy11c2Vycy13cml0ZSIsInByb2ZpbGUtY29udGFjdCIsInByb2ZpbGUtcmVhZCIsIm9yZy1jaGF0cy13cml0ZSIsInByb2ZpbGUtd3JpdGUiLCJjaGF0cy1yZWFkIiwib3JnLW1lc3NhZ2VzLXJlYWQiLCJvcmctdXNlcnMtcmVhZCJdfQ.hgp7m7iHRg74p-7BnJgmZLHbmtnBpOhTZtvShj3UAIvPR3AuTd2IEvLvz_KrKjx_FoJpdx5nsN0wDfV4mPuzXjsPowKU9o7hh2wDSCtcKxT3KazTNtLQSbVD1DTFTllszHQ2kBeXFMbp36F13wVnpz6DmFBnIVDYWZHb4PCiQidpGZnmYfuE3n68ZXa5uRUg2wVU4ocB1a4zntZggVVh5NBGSoEplrVT8QKmQc30oB2W_swGnz1PF-jMDYqE4PTLnLxE5Xq3oNhUHybJOi2IKeGVg-nE7QQiC3eQyiOZeykHkvBacf5T9CSXtt3RTp0JcEPv8VEnlN8cr0L-sJ-BowW3mg6Pnk-BYbPWz3B6ErMVGxqVg0pMyYf-dNrWEM0ud8cTZOLyGRkhIIEpcbUVjvgcHR5MC2vvGXfdM84R9VNc6sdZRUCj4zklvH8BhjMWL9LJX-FzYqPPHyXqWWaePoTaVzfKCZv3KCA1-TJLp2Yi_i9b-653Lp7X9_ex98Q3Qt7xTzkCGsNwxZ9EECY5xOewUDDKzHR86b9lu3aOMwLsJ6pYwjHe9VCM18QNWdUyYtDtxzW3MF25zGKdS0MPiie4hgYmoe2H9T7vfD006Xsbg03sFkaiYhVaQAMjPaf1F_3N0YyGxcl-_Ce130mvqPdCFIIahmgD0ecEUUDWgbw'
+                        },
+                        body: ' { "first_name": "' + firstName + '", "last_name": "' + lastName + '", "email": "' + res.login + '" } '
+                    };
+                    fetch('https://api.pronto.io/api/users', options)
+                        .then(response => response.json())
+                        .then(response => console.log(response))
+                        .catch(err => console.error(err));
+
+                    location.replace("https://accounts.pronto.io/");
+
                     return;
                 }
                 // If the user is not logged in, then render new login widget.
