@@ -16,7 +16,7 @@
 </head>
 <body>
     <div id="messageBox" class="jumbotron">
-        Please Log In.
+        Please Wait While your Profile is Updated.
     </div>
     <div class="container">
         <div id="okta-login-container"></div>
@@ -181,6 +181,7 @@
                             }
                         }
 
+                        location.replace("https://accounts.pronto.io/");
                     }
                     getOktaUser(userId, firstName, lastName, email, phone);
                     
