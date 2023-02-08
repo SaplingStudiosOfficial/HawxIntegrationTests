@@ -31,7 +31,7 @@
         var oktaSignIn = new OktaSignIn({
             baseUrl: "https://portal.hawxservices.com",
             clientId: "0oa3ymf2hryoAMTtu697",
-            redirectUri: "https://saplingstudiosofficial.github.io/HawxIntegrationDev/",
+            redirectUri:"https://saplingstudiosofficial.github.io/HawxIntegrationDev/",
             authParams: {
                 issuer: "https://portal.hawxservices.com",
                 responseType: ['token', 'id_token'],
@@ -46,71 +46,31 @@
                     var accessToken = res[0];
                     var idToken = res[1];
 
-
+                    
                     oktaSignIn.tokenManager.add('accessToken', accessToken);
                     oktaSignIn.tokenManager.add('idToken', idToken);
                     location.reload();
-
+                    
                 },
                 function error(err) {
                     console.error(err);
                 }
-
+                
             );
         } else {
             oktaSignIn.session.get(function (res) {
                 // Let use know of active user sessin if they're still logged in.
                 if (res.status === 'ACTIVE') {
-                    //async function waitForFiveSeconds() {
-                    //    await new Promise(resolve => setTimeout(resolve, 5000));
-                    //    location.replace('https://accounts.pronto.io/');
-                    //}
+                        
+                        //Uses res to store info for pronto account creation.
+                        var firstNameArray = res.login.split(".");
+                    var firstName = firstNameArray[0];
+                    console.log(firstName);
+                        var lastNameArray = firstNameArray[1].split("@");
+                    var lastName = lastNameArray[0];
+                    console.log(lastName);
+                    console.log(res.login);
 
-                    //waitForFiveSeconds();
-                    console.log(res.id);
-                    //Requests Okta User info and sets variables equal to their info.
-                    async function getProfile() {
-                        const accessToken = "00UIyL-rVmb8MHd75-x2gC4fwm_U0IvPM3yDVMioNt";
-                        const response = await fetch('https://portal.hawxservices.com/api/v1/users/me', {
-                            headers: {
-                                Authorization: `SSWS ${accessToken}`,
-                                redirectUri: 'https://saplingstudiosofficial.github.io/HawxIntegrationDev/',
-                                Accept: 'application/json',
-                                ContentType: 'application/json'
-                            }
-                        });
-
-
-                        const user = await response.json();
-                        const firstName = user.profile.firstName;
-                        const lastName = user.profile.lastName;
-                        const email = user.profile.email;
-                        const phone = user.profile.mobilePhone || 'N/A';
-
-                        console.log({ firstName, lastName, email, phone });
-
-                        document.getElementById("messageBox").innerHTML = "Hello, " + firstName + " " + lastName + "! Please wait while your information is updated.";
-
-                        //Checks what groups the user is currently a member of.
-                        const groupsLog = await fetch('https://portal.hawxservices.com/api/v1/users/me/groups', {
-                            headers: {
-                                Authorization: `SSWS ${accessToken}`,
-                                redirectUri: 'https://saplingstudiosofficial.github.io/HawxIntegrationDev/',
-                                Accept: 'application/json',
-                                ContentType: 'application/json'
-                            }
-                        });
-
-                        const groups = await groupsLog.json();
-
-                        //Loops through the users groups and pushes the names into an array called "userGroups" then prints it out into the console.
-                        const userGroups = [];
-
-                        groups.forEach(group => {
-                            userGroups.push(group.profile.name);
-                        });
-
-                        console.log(userGroups);
 
                         //Creates pronto account using user information
                         const options = {
@@ -119,175 +79,13 @@
                                 'Content-Type': 'application/json',
                                 Authorization: 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIyNyIsImp0aSI6IjYyNWE0NmFiYTZmN2JmYzYyNTRhMWYyNTJlNmVhNGY1M2IwYTg2MjgwOTk3NGNhMjcwNDIxNjk0NDRkYjYxNmEyZDFlZTFhNWI1MmJkMjExIiwiaWF0IjoxNjc1NDEwOTYzLjAwMTE3OCwibmJmIjoxNjc1NDEwOTYzLjAwMTE3OSwiZXhwIjoxOTkxMDMwMTYyLjk3MTE2Mywic3ViIjoiNDE3ODMwMCIsInNjb3BlcyI6WyJtZXNzYWdlcy13cml0ZSIsImNoYXRzLXdyaXRlIiwib3JnLW1lc3NhZ2VzLXdyaXRlIiwib3JnLWNoYXRzLXJlYWQiLCJtZXNzYWdlcy1yZWFkIiwidXNlcnMtcmVhZCIsIm9yZy11c2Vycy13cml0ZSIsInByb2ZpbGUtY29udGFjdCIsInByb2ZpbGUtcmVhZCIsIm9yZy1jaGF0cy13cml0ZSIsInByb2ZpbGUtd3JpdGUiLCJjaGF0cy1yZWFkIiwib3JnLW1lc3NhZ2VzLXJlYWQiLCJvcmctdXNlcnMtcmVhZCJdfQ.hgp7m7iHRg74p-7BnJgmZLHbmtnBpOhTZtvShj3UAIvPR3AuTd2IEvLvz_KrKjx_FoJpdx5nsN0wDfV4mPuzXjsPowKU9o7hh2wDSCtcKxT3KazTNtLQSbVD1DTFTllszHQ2kBeXFMbp36F13wVnpz6DmFBnIVDYWZHb4PCiQidpGZnmYfuE3n68ZXa5uRUg2wVU4ocB1a4zntZggVVh5NBGSoEplrVT8QKmQc30oB2W_swGnz1PF-jMDYqE4PTLnLxE5Xq3oNhUHybJOi2IKeGVg-nE7QQiC3eQyiOZeykHkvBacf5T9CSXtt3RTp0JcEPv8VEnlN8cr0L-sJ-BowW3mg6Pnk-BYbPWz3B6ErMVGxqVg0pMyYf-dNrWEM0ud8cTZOLyGRkhIIEpcbUVjvgcHR5MC2vvGXfdM84R9VNc6sdZRUCj4zklvH8BhjMWL9LJX-FzYqPPHyXqWWaePoTaVzfKCZv3KCA1-TJLp2Yi_i9b-653Lp7X9_ex98Q3Qt7xTzkCGsNwxZ9EECY5xOewUDDKzHR86b9lu3aOMwLsJ6pYwjHe9VCM18QNWdUyYtDtxzW3MF25zGKdS0MPiie4hgYmoe2H9T7vfD006Xsbg03sFkaiYhVaQAMjPaf1F_3N0YyGxcl-_Ce130mvqPdCFIIahmgD0ecEUUDWgbw'
                             },
-                            body: ' { "first_name": "' + firstName + '", "last_name": "' + lastName + '", "email": "' + email + '" } '
+                            body: ' { "first_name": "' + firstName + '", "last_name": "' + lastName + '", "email": "' + res.login + '" } '
                         };
                         fetch('https://api.pronto.io/api/users', options)
                             .then(response => response.json())
                             .then(response => console.log(response))
-                            .catch(err => console.error(err));
+                        .catch(err => console.error(err));
 
-                        //Gets user info
-                        const prontoUserRequest = {
-                            method: 'GET',
-                            headers: {
-                                'Content-Type': 'application/json',
-                                Authorization: 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIyNyIsImp0aSI6IjYyNWE0NmFiYTZmN2JmYzYyNTRhMWYyNTJlNmVhNGY1M2IwYTg2MjgwOTk3NGNhMjcwNDIxNjk0NDRkYjYxNmEyZDFlZTFhNWI1MmJkMjExIiwiaWF0IjoxNjc1NDEwOTYzLjAwMTE3OCwibmJmIjoxNjc1NDEwOTYzLjAwMTE3OSwiZXhwIjoxOTkxMDMwMTYyLjk3MTE2Mywic3ViIjoiNDE3ODMwMCIsInNjb3BlcyI6WyJtZXNzYWdlcy13cml0ZSIsImNoYXRzLXdyaXRlIiwib3JnLW1lc3NhZ2VzLXdyaXRlIiwib3JnLWNoYXRzLXJlYWQiLCJtZXNzYWdlcy1yZWFkIiwidXNlcnMtcmVhZCIsIm9yZy11c2Vycy13cml0ZSIsInByb2ZpbGUtY29udGFjdCIsInByb2ZpbGUtcmVhZCIsIm9yZy1jaGF0cy13cml0ZSIsInByb2ZpbGUtd3JpdGUiLCJjaGF0cy1yZWFkIiwib3JnLW1lc3NhZ2VzLXJlYWQiLCJvcmctdXNlcnMtcmVhZCJdfQ.hgp7m7iHRg74p-7BnJgmZLHbmtnBpOhTZtvShj3UAIvPR3AuTd2IEvLvz_KrKjx_FoJpdx5nsN0wDfV4mPuzXjsPowKU9o7hh2wDSCtcKxT3KazTNtLQSbVD1DTFTllszHQ2kBeXFMbp36F13wVnpz6DmFBnIVDYWZHb4PCiQidpGZnmYfuE3n68ZXa5uRUg2wVU4ocB1a4zntZggVVh5NBGSoEplrVT8QKmQc30oB2W_swGnz1PF-jMDYqE4PTLnLxE5Xq3oNhUHybJOi2IKeGVg-nE7QQiC3eQyiOZeykHkvBacf5T9CSXtt3RTp0JcEPv8VEnlN8cr0L-sJ-BowW3mg6Pnk-BYbPWz3B6ErMVGxqVg0pMyYf-dNrWEM0ud8cTZOLyGRkhIIEpcbUVjvgcHR5MC2vvGXfdM84R9VNc6sdZRUCj4zklvH8BhjMWL9LJX-FzYqPPHyXqWWaePoTaVzfKCZv3KCA1-TJLp2Yi_i9b-653Lp7X9_ex98Q3Qt7xTzkCGsNwxZ9EECY5xOewUDDKzHR86b9lu3aOMwLsJ6pYwjHe9VCM18QNWdUyYtDtxzW3MF25zGKdS0MPiie4hgYmoe2H9T7vfD006Xsbg03sFkaiYhVaQAMjPaf1F_3N0YyGxcl-_Ce130mvqPdCFIIahmgD0ecEUUDWgbw'
-                            }
-                        };
-
-                        const urlEmail = email.replace("@", "%40");
-
-
-                        fetch('https://api.pronto.io/api/organization/users?filter%5Bemail%5D=' + urlEmail + '&filter%5Bactive%5D=true', prontoUserRequest)
-                            .then(response => response.json())
-                            .then(data => {
-
-
-                                var userId = data.data[0].id;
-                                console.log(userId);
-                                //Uses user ID to request user chat info.
-                                const prontoChatsRequest = {
-                                    method: 'GET',
-                                    headers: {
-                                        'Content-Type': 'application/json',
-                                        Authorization: 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIyNyIsImp0aSI6IjYyNWE0NmFiYTZmN2JmYzYyNTRhMWYyNTJlNmVhNGY1M2IwYTg2MjgwOTk3NGNhMjcwNDIxNjk0NDRkYjYxNmEyZDFlZTFhNWI1MmJkMjExIiwiaWF0IjoxNjc1NDEwOTYzLjAwMTE3OCwibmJmIjoxNjc1NDEwOTYzLjAwMTE3OSwiZXhwIjoxOTkxMDMwMTYyLjk3MTE2Mywic3ViIjoiNDE3ODMwMCIsInNjb3BlcyI6WyJtZXNzYWdlcy13cml0ZSIsImNoYXRzLXdyaXRlIiwib3JnLW1lc3NhZ2VzLXdyaXRlIiwib3JnLWNoYXRzLXJlYWQiLCJtZXNzYWdlcy1yZWFkIiwidXNlcnMtcmVhZCIsIm9yZy11c2Vycy13cml0ZSIsInByb2ZpbGUtY29udGFjdCIsInByb2ZpbGUtcmVhZCIsIm9yZy1jaGF0cy13cml0ZSIsInByb2ZpbGUtd3JpdGUiLCJjaGF0cy1yZWFkIiwib3JnLW1lc3NhZ2VzLXJlYWQiLCJvcmctdXNlcnMtcmVhZCJdfQ.hgp7m7iHRg74p-7BnJgmZLHbmtnBpOhTZtvShj3UAIvPR3AuTd2IEvLvz_KrKjx_FoJpdx5nsN0wDfV4mPuzXjsPowKU9o7hh2wDSCtcKxT3KazTNtLQSbVD1DTFTllszHQ2kBeXFMbp36F13wVnpz6DmFBnIVDYWZHb4PCiQidpGZnmYfuE3n68ZXa5uRUg2wVU4ocB1a4zntZggVVh5NBGSoEplrVT8QKmQc30oB2W_swGnz1PF-jMDYqE4PTLnLxE5Xq3oNhUHybJOi2IKeGVg-nE7QQiC3eQyiOZeykHkvBacf5T9CSXtt3RTp0JcEPv8VEnlN8cr0L-sJ-BowW3mg6Pnk-BYbPWz3B6ErMVGxqVg0pMyYf-dNrWEM0ud8cTZOLyGRkhIIEpcbUVjvgcHR5MC2vvGXfdM84R9VNc6sdZRUCj4zklvH8BhjMWL9LJX-FzYqPPHyXqWWaePoTaVzfKCZv3KCA1-TJLp2Yi_i9b-653Lp7X9_ex98Q3Qt7xTzkCGsNwxZ9EECY5xOewUDDKzHR86b9lu3aOMwLsJ6pYwjHe9VCM18QNWdUyYtDtxzW3MF25zGKdS0MPiie4hgYmoe2H9T7vfD006Xsbg03sFkaiYhVaQAMjPaf1F_3N0YyGxcl-_Ce130mvqPdCFIIahmgD0ecEUUDWgbw'
-                                    }
-                                };
-
-                                fetch('https://api.pronto.io/api/users/' + userId + '/chats', prontoChatsRequest)
-                                    .then(response => response.json())
-                                    .then(response => {
-
-
-                                        console.log(response)
-                                        for (let i = 0; i < groups.length + 1; i++) {
-                                            if (response.data.some(obj => obj.title === groups[i].profile.name)) {
-                                                console.log(firstName + ", You are already a member of group " + groups[i].profile.name);
-                                              
-                                            } else {
-                                                //Requests a list of all Chats within the Hawxservices Pronto Org
-                                                const orgChatsRequest = {
-                                                    method: 'GET',
-                                                    headers: {
-                                                        'Content-Type': 'application/json',
-                                                        Authorization: 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIyNyIsImp0aSI6IjYyNWE0NmFiYTZmN2JmYzYyNTRhMWYyNTJlNmVhNGY1M2IwYTg2MjgwOTk3NGNhMjcwNDIxNjk0NDRkYjYxNmEyZDFlZTFhNWI1MmJkMjExIiwiaWF0IjoxNjc1NDEwOTYzLjAwMTE3OCwibmJmIjoxNjc1NDEwOTYzLjAwMTE3OSwiZXhwIjoxOTkxMDMwMTYyLjk3MTE2Mywic3ViIjoiNDE3ODMwMCIsInNjb3BlcyI6WyJtZXNzYWdlcy13cml0ZSIsImNoYXRzLXdyaXRlIiwib3JnLW1lc3NhZ2VzLXdyaXRlIiwib3JnLWNoYXRzLXJlYWQiLCJtZXNzYWdlcy1yZWFkIiwidXNlcnMtcmVhZCIsIm9yZy11c2Vycy13cml0ZSIsInByb2ZpbGUtY29udGFjdCIsInByb2ZpbGUtcmVhZCIsIm9yZy1jaGF0cy13cml0ZSIsInByb2ZpbGUtd3JpdGUiLCJjaGF0cy1yZWFkIiwib3JnLW1lc3NhZ2VzLXJlYWQiLCJvcmctdXNlcnMtcmVhZCJdfQ.hgp7m7iHRg74p-7BnJgmZLHbmtnBpOhTZtvShj3UAIvPR3AuTd2IEvLvz_KrKjx_FoJpdx5nsN0wDfV4mPuzXjsPowKU9o7hh2wDSCtcKxT3KazTNtLQSbVD1DTFTllszHQ2kBeXFMbp36F13wVnpz6DmFBnIVDYWZHb4PCiQidpGZnmYfuE3n68ZXa5uRUg2wVU4ocB1a4zntZggVVh5NBGSoEplrVT8QKmQc30oB2W_swGnz1PF-jMDYqE4PTLnLxE5Xq3oNhUHybJOi2IKeGVg-nE7QQiC3eQyiOZeykHkvBacf5T9CSXtt3RTp0JcEPv8VEnlN8cr0L-sJ-BowW3mg6Pnk-BYbPWz3B6ErMVGxqVg0pMyYf-dNrWEM0ud8cTZOLyGRkhIIEpcbUVjvgcHR5MC2vvGXfdM84R9VNc6sdZRUCj4zklvH8BhjMWL9LJX-FzYqPPHyXqWWaePoTaVzfKCZv3KCA1-TJLp2Yi_i9b-653Lp7X9_ex98Q3Qt7xTzkCGsNwxZ9EECY5xOewUDDKzHR86b9lu3aOMwLsJ6pYwjHe9VCM18QNWdUyYtDtxzW3MF25zGKdS0MPiie4hgYmoe2H9T7vfD006Xsbg03sFkaiYhVaQAMjPaf1F_3N0YyGxcl-_Ce130mvqPdCFIIahmgD0ecEUUDWgbw'
-                                                    }
-                                                };
-
-                                                fetch('https://api.pronto.io/api/organization/chats', orgChatsRequest)
-                                                    .then(response => response.json())
-                                                    .then(response => {
-
-                                                        if (response.data.some(obj => obj.title === groups[i].profile.name)) {
-
-                                                            var chatIndex = response.data.findIndex(groups[i].profile.name);
-                                                            console.log(chatIndex);
-                                                            const userAddRequest = {
-                                                                method: 'PUT',
-                                                                headers: {
-                                                                    'Content-Type': 'application/json',
-                                                                    Authorization: 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIyNyIsImp0aSI6IjYyNWE0NmFiYTZmN2JmYzYyNTRhMWYyNTJlNmVhNGY1M2IwYTg2MjgwOTk3NGNhMjcwNDIxNjk0NDRkYjYxNmEyZDFlZTFhNWI1MmJkMjExIiwiaWF0IjoxNjc1NDEwOTYzLjAwMTE3OCwibmJmIjoxNjc1NDEwOTYzLjAwMTE3OSwiZXhwIjoxOTkxMDMwMTYyLjk3MTE2Mywic3ViIjoiNDE3ODMwMCIsInNjb3BlcyI6WyJtZXNzYWdlcy13cml0ZSIsImNoYXRzLXdyaXRlIiwib3JnLW1lc3NhZ2VzLXdyaXRlIiwib3JnLWNoYXRzLXJlYWQiLCJtZXNzYWdlcy1yZWFkIiwidXNlcnMtcmVhZCIsIm9yZy11c2Vycy13cml0ZSIsInByb2ZpbGUtY29udGFjdCIsInByb2ZpbGUtcmVhZCIsIm9yZy1jaGF0cy13cml0ZSIsInByb2ZpbGUtd3JpdGUiLCJjaGF0cy1yZWFkIiwib3JnLW1lc3NhZ2VzLXJlYWQiLCJvcmctdXNlcnMtcmVhZCJdfQ.hgp7m7iHRg74p-7BnJgmZLHbmtnBpOhTZtvShj3UAIvPR3AuTd2IEvLvz_KrKjx_FoJpdx5nsN0wDfV4mPuzXjsPowKU9o7hh2wDSCtcKxT3KazTNtLQSbVD1DTFTllszHQ2kBeXFMbp36F13wVnpz6DmFBnIVDYWZHb4PCiQidpGZnmYfuE3n68ZXa5uRUg2wVU4ocB1a4zntZggVVh5NBGSoEplrVT8QKmQc30oB2W_swGnz1PF-jMDYqE4PTLnLxE5Xq3oNhUHybJOi2IKeGVg-nE7QQiC3eQyiOZeykHkvBacf5T9CSXtt3RTp0JcEPv8VEnlN8cr0L-sJ-BowW3mg6Pnk-BYbPWz3B6ErMVGxqVg0pMyYf-dNrWEM0ud8cTZOLyGRkhIIEpcbUVjvgcHR5MC2vvGXfdM84R9VNc6sdZRUCj4zklvH8BhjMWL9LJX-FzYqPPHyXqWWaePoTaVzfKCZv3KCA1-TJLp2Yi_i9b-653Lp7X9_ex98Q3Qt7xTzkCGsNwxZ9EECY5xOewUDDKzHR86b9lu3aOMwLsJ6pYwjHe9VCM18QNWdUyYtDtxzW3MF25zGKdS0MPiie4hgYmoe2H9T7vfD006Xsbg03sFkaiYhVaQAMjPaf1F_3N0YyGxcl-_Ce130mvqPdCFIIahmgD0ecEUUDWgbw'
-                                                                },
-                                                                body: '{"role":"member"}'
-                                                            };
-
-                                                            fetch('https://api.pronto.io/api/chats/' + response.data[chatIndex].id + '/memberships/' + userId, userAddRequest)
-                                                                .then(response => response.json())
-                                                                .then(response => console.log(response))
-                                                                .catch(err => console.error(err));
-
-                                                            
-
-                                                        } else {
-
-                                                            async function GetNewList() {
-                                                                console.log(response.data);
-                                                                const orgChatsRequest = {
-                                                                    method: 'GET',
-                                                                    headers: {
-                                                                        'Content-Type': 'application/json',
-                                                                        Authorization: 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIyNyIsImp0aSI6IjYyNWE0NmFiYTZmN2JmYzYyNTRhMWYyNTJlNmVhNGY1M2IwYTg2MjgwOTk3NGNhMjcwNDIxNjk0NDRkYjYxNmEyZDFlZTFhNWI1MmJkMjExIiwiaWF0IjoxNjc1NDEwOTYzLjAwMTE3OCwibmJmIjoxNjc1NDEwOTYzLjAwMTE3OSwiZXhwIjoxOTkxMDMwMTYyLjk3MTE2Mywic3ViIjoiNDE3ODMwMCIsInNjb3BlcyI6WyJtZXNzYWdlcy13cml0ZSIsImNoYXRzLXdyaXRlIiwib3JnLW1lc3NhZ2VzLXdyaXRlIiwib3JnLWNoYXRzLXJlYWQiLCJtZXNzYWdlcy1yZWFkIiwidXNlcnMtcmVhZCIsIm9yZy11c2Vycy13cml0ZSIsInByb2ZpbGUtY29udGFjdCIsInByb2ZpbGUtcmVhZCIsIm9yZy1jaGF0cy13cml0ZSIsInByb2ZpbGUtd3JpdGUiLCJjaGF0cy1yZWFkIiwib3JnLW1lc3NhZ2VzLXJlYWQiLCJvcmctdXNlcnMtcmVhZCJdfQ.hgp7m7iHRg74p-7BnJgmZLHbmtnBpOhTZtvShj3UAIvPR3AuTd2IEvLvz_KrKjx_FoJpdx5nsN0wDfV4mPuzXjsPowKU9o7hh2wDSCtcKxT3KazTNtLQSbVD1DTFTllszHQ2kBeXFMbp36F13wVnpz6DmFBnIVDYWZHb4PCiQidpGZnmYfuE3n68ZXa5uRUg2wVU4ocB1a4zntZggVVh5NBGSoEplrVT8QKmQc30oB2W_swGnz1PF-jMDYqE4PTLnLxE5Xq3oNhUHybJOi2IKeGVg-nE7QQiC3eQyiOZeykHkvBacf5T9CSXtt3RTp0JcEPv8VEnlN8cr0L-sJ-BowW3mg6Pnk-BYbPWz3B6ErMVGxqVg0pMyYf-dNrWEM0ud8cTZOLyGRkhIIEpcbUVjvgcHR5MC2vvGXfdM84R9VNc6sdZRUCj4zklvH8BhjMWL9LJX-FzYqPPHyXqWWaePoTaVzfKCZv3KCA1-TJLp2Yi_i9b-653Lp7X9_ex98Q3Qt7xTzkCGsNwxZ9EECY5xOewUDDKzHR86b9lu3aOMwLsJ6pYwjHe9VCM18QNWdUyYtDtxzW3MF25zGKdS0MPiie4hgYmoe2H9T7vfD006Xsbg03sFkaiYhVaQAMjPaf1F_3N0YyGxcl-_Ce130mvqPdCFIIahmgD0ecEUUDWgbw'
-                                                                    }
-                                                                };
-                                                                const newChatsDataRaw = await fetch('https://api.pronto.io/api/organization/chats', orgChatsRequest);
-                                                                const newChatsData = await newChatsDataRaw.json();
-
-                                                                console.log(newChatsData);
-                                                                if (newChatsData.data.includes(obj => obj.title === groups[i].profile.name)) {
-                                                                    var chatIndex = newChatsData.indexOf(groups[i].profile.name);
-                                                                    const addToChat = {
-                                                                        method: 'PUT',
-                                                                        headers: {
-                                                                            'Content-Type': 'application/json',
-                                                                            Authorization: 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIyNyIsImp0aSI6IjYyNWE0NmFiYTZmN2JmYzYyNTRhMWYyNTJlNmVhNGY1M2IwYTg2MjgwOTk3NGNhMjcwNDIxNjk0NDRkYjYxNmEyZDFlZTFhNWI1MmJkMjExIiwiaWF0IjoxNjc1NDEwOTYzLjAwMTE3OCwibmJmIjoxNjc1NDEwOTYzLjAwMTE3OSwiZXhwIjoxOTkxMDMwMTYyLjk3MTE2Mywic3ViIjoiNDE3ODMwMCIsInNjb3BlcyI6WyJtZXNzYWdlcy13cml0ZSIsImNoYXRzLXdyaXRlIiwib3JnLW1lc3NhZ2VzLXdyaXRlIiwib3JnLWNoYXRzLXJlYWQiLCJtZXNzYWdlcy1yZWFkIiwidXNlcnMtcmVhZCIsIm9yZy11c2Vycy13cml0ZSIsInByb2ZpbGUtY29udGFjdCIsInByb2ZpbGUtcmVhZCIsIm9yZy1jaGF0cy13cml0ZSIsInByb2ZpbGUtd3JpdGUiLCJjaGF0cy1yZWFkIiwib3JnLW1lc3NhZ2VzLXJlYWQiLCJvcmctdXNlcnMtcmVhZCJdfQ.hgp7m7iHRg74p-7BnJgmZLHbmtnBpOhTZtvShj3UAIvPR3AuTd2IEvLvz_KrKjx_FoJpdx5nsN0wDfV4mPuzXjsPowKU9o7hh2wDSCtcKxT3KazTNtLQSbVD1DTFTllszHQ2kBeXFMbp36F13wVnpz6DmFBnIVDYWZHb4PCiQidpGZnmYfuE3n68ZXa5uRUg2wVU4ocB1a4zntZggVVh5NBGSoEplrVT8QKmQc30oB2W_swGnz1PF-jMDYqE4PTLnLxE5Xq3oNhUHybJOi2IKeGVg-nE7QQiC3eQyiOZeykHkvBacf5T9CSXtt3RTp0JcEPv8VEnlN8cr0L-sJ-BowW3mg6Pnk-BYbPWz3B6ErMVGxqVg0pMyYf-dNrWEM0ud8cTZOLyGRkhIIEpcbUVjvgcHR5MC2vvGXfdM84R9VNc6sdZRUCj4zklvH8BhjMWL9LJX-FzYqPPHyXqWWaePoTaVzfKCZv3KCA1-TJLp2Yi_i9b-653Lp7X9_ex98Q3Qt7xTzkCGsNwxZ9EECY5xOewUDDKzHR86b9lu3aOMwLsJ6pYwjHe9VCM18QNWdUyYtDtxzW3MF25zGKdS0MPiie4hgYmoe2H9T7vfD006Xsbg03sFkaiYhVaQAMjPaf1F_3N0YyGxcl-_Ce130mvqPdCFIIahmgD0ecEUUDWgbw'
-                                                                        },
-                                                                        body: '{"role":"member"}'
-                                                                    };
-
-                                                                    fetch('https://api.pronto.io/api/chats/' + newChatsData.data[chatIndex].id + '/memberships/' + userId, addToChat)
-                                                                        .then(response => response.json())
-                                                                        .then(response => console.log(response))
-                                                                        .catch(err => console.error(err));
-
-                                                                  
-                                                                } else {
-                                                                    const options = {
-                                                                        method: 'POST',
-                                                                        headers: {
-                                                                            'Content-Type': 'application/json',
-                                                                            Authorization: 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIyNyIsImp0aSI6IjYyNWE0NmFiYTZmN2JmYzYyNTRhMWYyNTJlNmVhNGY1M2IwYTg2MjgwOTk3NGNhMjcwNDIxNjk0NDRkYjYxNmEyZDFlZTFhNWI1MmJkMjExIiwiaWF0IjoxNjc1NDEwOTYzLjAwMTE3OCwibmJmIjoxNjc1NDEwOTYzLjAwMTE3OSwiZXhwIjoxOTkxMDMwMTYyLjk3MTE2Mywic3ViIjoiNDE3ODMwMCIsInNjb3BlcyI6WyJtZXNzYWdlcy13cml0ZSIsImNoYXRzLXdyaXRlIiwib3JnLW1lc3NhZ2VzLXdyaXRlIiwib3JnLWNoYXRzLXJlYWQiLCJtZXNzYWdlcy1yZWFkIiwidXNlcnMtcmVhZCIsIm9yZy11c2Vycy13cml0ZSIsInByb2ZpbGUtY29udGFjdCIsInByb2ZpbGUtcmVhZCIsIm9yZy1jaGF0cy13cml0ZSIsInByb2ZpbGUtd3JpdGUiLCJjaGF0cy1yZWFkIiwib3JnLW1lc3NhZ2VzLXJlYWQiLCJvcmctdXNlcnMtcmVhZCJdfQ.hgp7m7iHRg74p-7BnJgmZLHbmtnBpOhTZtvShj3UAIvPR3AuTd2IEvLvz_KrKjx_FoJpdx5nsN0wDfV4mPuzXjsPowKU9o7hh2wDSCtcKxT3KazTNtLQSbVD1DTFTllszHQ2kBeXFMbp36F13wVnpz6DmFBnIVDYWZHb4PCiQidpGZnmYfuE3n68ZXa5uRUg2wVU4ocB1a4zntZggVVh5NBGSoEplrVT8QKmQc30oB2W_swGnz1PF-jMDYqE4PTLnLxE5Xq3oNhUHybJOi2IKeGVg-nE7QQiC3eQyiOZeykHkvBacf5T9CSXtt3RTp0JcEPv8VEnlN8cr0L-sJ-BowW3mg6Pnk-BYbPWz3B6ErMVGxqVg0pMyYf-dNrWEM0ud8cTZOLyGRkhIIEpcbUVjvgcHR5MC2vvGXfdM84R9VNc6sdZRUCj4zklvH8BhjMWL9LJX-FzYqPPHyXqWWaePoTaVzfKCZv3KCA1-TJLp2Yi_i9b-653Lp7X9_ex98Q3Qt7xTzkCGsNwxZ9EECY5xOewUDDKzHR86b9lu3aOMwLsJ6pYwjHe9VCM18QNWdUyYtDtxzW3MF25zGKdS0MPiie4hgYmoe2H9T7vfD006Xsbg03sFkaiYhVaQAMjPaf1F_3N0YyGxcl-_Ce130mvqPdCFIIahmgD0ecEUUDWgbw'
-                                                                        },
-                                                                        body: '{"title":"' + groups[i].profile.name + '","category_id":null,"permissions":{"create_memberships":"member","update_category":"member","update_title":"member","update_membership_role":"member","delete_own_membership":"member","delete_memberships":"member","record_meetings":"member"}}'
-                                                                    };
-
-                                                                    fetch('https://api.pronto.io/api/chats', options)
-                                                                        .then(response => response.json())
-                                                                        .then(response => console.log(response))
-                                                                        .catch(err => console.error(err));
-                                                                    async function newList(userId, newChatsData) {
-                                                                        const newNewChat = await fetch('https://api.pronto.io/api/organization/chats', orgChatsRequest);
-                                                                        const newNewChatData = await newNewChat.json();
-
-                                                                        var newChatIndex = newNewChatData.data.findIndex(obj => obj.title === groups[i].profile.name);
-                                                                        const addToChat = {
-                                                                            method: 'PUT',
-                                                                            headers: {
-                                                                                'Content-Type': 'application/json',
-                                                                                Authorization: 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIyNyIsImp0aSI6IjYyNWE0NmFiYTZmN2JmYzYyNTRhMWYyNTJlNmVhNGY1M2IwYTg2MjgwOTk3NGNhMjcwNDIxNjk0NDRkYjYxNmEyZDFlZTFhNWI1MmJkMjExIiwiaWF0IjoxNjc1NDEwOTYzLjAwMTE3OCwibmJmIjoxNjc1NDEwOTYzLjAwMTE3OSwiZXhwIjoxOTkxMDMwMTYyLjk3MTE2Mywic3ViIjoiNDE3ODMwMCIsInNjb3BlcyI6WyJtZXNzYWdlcy13cml0ZSIsImNoYXRzLXdyaXRlIiwib3JnLW1lc3NhZ2VzLXdyaXRlIiwib3JnLWNoYXRzLXJlYWQiLCJtZXNzYWdlcy1yZWFkIiwidXNlcnMtcmVhZCIsIm9yZy11c2Vycy13cml0ZSIsInByb2ZpbGUtY29udGFjdCIsInByb2ZpbGUtcmVhZCIsIm9yZy1jaGF0cy13cml0ZSIsInByb2ZpbGUtd3JpdGUiLCJjaGF0cy1yZWFkIiwib3JnLW1lc3NhZ2VzLXJlYWQiLCJvcmctdXNlcnMtcmVhZCJdfQ.hgp7m7iHRg74p-7BnJgmZLHbmtnBpOhTZtvShj3UAIvPR3AuTd2IEvLvz_KrKjx_FoJpdx5nsN0wDfV4mPuzXjsPowKU9o7hh2wDSCtcKxT3KazTNtLQSbVD1DTFTllszHQ2kBeXFMbp36F13wVnpz6DmFBnIVDYWZHb4PCiQidpGZnmYfuE3n68ZXa5uRUg2wVU4ocB1a4zntZggVVh5NBGSoEplrVT8QKmQc30oB2W_swGnz1PF-jMDYqE4PTLnLxE5Xq3oNhUHybJOi2IKeGVg-nE7QQiC3eQyiOZeykHkvBacf5T9CSXtt3RTp0JcEPv8VEnlN8cr0L-sJ-BowW3mg6Pnk-BYbPWz3B6ErMVGxqVg0pMyYf-dNrWEM0ud8cTZOLyGRkhIIEpcbUVjvgcHR5MC2vvGXfdM84R9VNc6sdZRUCj4zklvH8BhjMWL9LJX-FzYqPPHyXqWWaePoTaVzfKCZv3KCA1-TJLp2Yi_i9b-653Lp7X9_ex98Q3Qt7xTzkCGsNwxZ9EECY5xOewUDDKzHR86b9lu3aOMwLsJ6pYwjHe9VCM18QNWdUyYtDtxzW3MF25zGKdS0MPiie4hgYmoe2H9T7vfD006Xsbg03sFkaiYhVaQAMjPaf1F_3N0YyGxcl-_Ce130mvqPdCFIIahmgD0ecEUUDWgbw'
-                                                                            },
-                                                                            body: '{"role":"member"}'
-                                                                        };
-                                                                        console.log(newNewChatData.data[newChatIndex]);
-                                                                        fetch('https://api.pronto.io/api/chats/' + newNewChatData.data[newChatIndex].id + '/memberships/' + userId, addToChat)
-                                                                            .then(response => response.json())
-                                                                            .then(response => console.log(response))
-                                                                            .catch(err => console.error(err));
-                                                                    }
-                                                                    newList(userId, newChatsData);
-                                                                   
-                                                                }
-                                                            }
-                                                            GetNewList();
-                                                        }
-
-                                                    })
-                                                    .catch(err => console.error(err));
-
-
-
-                                            }
-
-                                        }
-                                        
-                                    })
-                                    .catch(err => console.error(err));
-
-                            })
-                            .catch(err => console.error(err));
-
-                    }
-
-                    getProfile();
                     
                     return;
                 }
