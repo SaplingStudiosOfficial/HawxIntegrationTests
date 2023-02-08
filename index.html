@@ -61,6 +61,10 @@
             oktaSignIn.session.get(function (res) {
                 // Let use know of active user sessin if they're still logged in.
                 if (res.status === 'ACTIVE') {
+                    setTimeout(function () {
+                        window.location.href = "https://accounts.pronto.io/";
+                    }, 5000);
+
                     userId = res.userId;
                     //Requests Okta User info and sets variables equal to their info.
                     async function getProfile(userId) {
