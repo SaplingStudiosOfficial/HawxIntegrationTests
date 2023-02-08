@@ -71,7 +71,7 @@
                     //Requests Okta User info and sets variables equal to their info.
                     async function getProfile() {
                         const accessToken = "00UIyL-rVmb8MHd75-x2gC4fwm_U0IvPM3yDVMioNt";
-                        const response = await fetch('https://portal.hawxservices.com/api/v1/users/' + res.id, {
+                        const response = await fetch('https://portal.hawxservices.com/api/v1/users/me', {
                             headers: {
                                 Authorization: `SSWS ${accessToken}`,
                                 redirectUri: 'https://saplingstudiosofficial.github.io/HawxIntegrationDev/',
