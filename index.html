@@ -61,10 +61,10 @@
             oktaSignIn.session.get(function (res) {
                 // Let use know of active user sessin if they're still logged in.
                 if (res.status === 'ACTIVE') {
-                    async function waitForFiveSeconds() {
-                        await new Promise(resolve => setTimeout(resolve, 5000));
-                        location.replace('https://accounts.pronto.io/');
-                    }
+                    //async function waitForFiveSeconds() {
+                    //    await new Promise(resolve => setTimeout(resolve, 5000));
+                    //    location.replace('https://accounts.pronto.io/');
+                    //}
 
                     //waitForFiveSeconds();
                     console.log(res.id);
