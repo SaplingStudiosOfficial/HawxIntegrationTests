@@ -155,9 +155,18 @@
 
 
                         const prontoUserInfoRaw = await fetch('https://api.pronto.io/api/organization/users?filter%5Bemail%5D=' + urlEmail + '&filter%5Bactive%5D=true', prontoUserRequest);
+                       
                         const prontoUserInfo = await prontoUserInfoRaw.json();
+                        console.log(prontoUserInfo.data)
+
+                        if (prontoUserInfo.data.length < 2) {
+                            console.log("error grabbing user info from API");
+                            location.replace("https://accounts.pronto.io/");
+                        }
+
                         const prontoUserId = await prontoUserInfo.data[0].id;
-                        console.log(prontoUserId);
+                        
+                        
                         
 
                         for (i = 0; i < userGroups.length; i++) {
@@ -181,31 +190,12 @@
                                     .catch(err => console.error(err));
                                 console.log("You have been added to group " + userGroups[i]);
                             }
-                            if (status != 'ACTIVE') {
-
-                                const deacReq = {
-                                    method: 'DELETE',
-                                    headers: {
-                                        'Content-Type': 'application/json',
-                                        Authorization: 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIyNyIsImp0aSI6IjYyNWE0NmFiYTZmN2JmYzYyNTRhMWYyNTJlNmVhNGY1M2IwYTg2MjgwOTk3NGNhMjcwNDIxNjk0NDRkYjYxNmEyZDFlZTFhNWI1MmJkMjExIiwiaWF0IjoxNjc1NDEwOTYzLjAwMTE3OCwibmJmIjoxNjc1NDEwOTYzLjAwMTE3OSwiZXhwIjoxOTkxMDMwMTYyLjk3MTE2Mywic3ViIjoiNDE3ODMwMCIsInNjb3BlcyI6WyJtZXNzYWdlcy13cml0ZSIsImNoYXRzLXdyaXRlIiwib3JnLW1lc3NhZ2VzLXdyaXRlIiwib3JnLWNoYXRzLXJlYWQiLCJtZXNzYWdlcy1yZWFkIiwidXNlcnMtcmVhZCIsIm9yZy11c2Vycy13cml0ZSIsInByb2ZpbGUtY29udGFjdCIsInByb2ZpbGUtcmVhZCIsIm9yZy1jaGF0cy13cml0ZSIsInByb2ZpbGUtd3JpdGUiLCJjaGF0cy1yZWFkIiwib3JnLW1lc3NhZ2VzLXJlYWQiLCJvcmctdXNlcnMtcmVhZCJdfQ.hgp7m7iHRg74p-7BnJgmZLHbmtnBpOhTZtvShj3UAIvPR3AuTd2IEvLvz_KrKjx_FoJpdx5nsN0wDfV4mPuzXjsPowKU9o7hh2wDSCtcKxT3KazTNtLQSbVD1DTFTllszHQ2kBeXFMbp36F13wVnpz6DmFBnIVDYWZHb4PCiQidpGZnmYfuE3n68ZXa5uRUg2wVU4ocB1a4zntZggVVh5NBGSoEplrVT8QKmQc30oB2W_swGnz1PF-jMDYqE4PTLnLxE5Xq3oNhUHybJOi2IKeGVg-nE7QQiC3eQyiOZeykHkvBacf5T9CSXtt3RTp0JcEPv8VEnlN8cr0L-sJ-BowW3mg6Pnk-BYbPWz3B6ErMVGxqVg0pMyYf-dNrWEM0ud8cTZOLyGRkhIIEpcbUVjvgcHR5MC2vvGXfdM84R9VNc6sdZRUCj4zklvH8BhjMWL9LJX-FzYqPPHyXqWWaePoTaVzfKCZv3KCA1-TJLp2Yi_i9b-653Lp7X9_ex98Q3Qt7xTzkCGsNwxZ9EECY5xOewUDDKzHR86b9lu3aOMwLsJ6pYwjHe9VCM18QNWdUyYtDtxzW3MF25zGKdS0MPiie4hgYmoe2H9T7vfD006Xsbg03sFkaiYhVaQAMjPaf1F_3N0YyGxcl-_Ce130mvqPdCFIIahmgD0ecEUUDWgbw'
-                                    }
-                                };
-
-                                fetch('https://api.pronto.io/api/users/' + prontoUserId, deacReq)
-                                    .then(response => response.json())
-                                    .then(response => console.log(response))
-                                    .catch(err => console.error(err));
-
-                            } else {
-                                console.log("You are still an active Okta account!");
-                            }
+                            
                         }
 
                         location.replace("https://accounts.pronto.io/");
                     }
                     getOktaUser(userId, firstName, lastName, email, phone, status);
-                    
-                    
                     
                     return;
                 }
