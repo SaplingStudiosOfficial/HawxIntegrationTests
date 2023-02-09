@@ -159,7 +159,7 @@
                         const prontoUserInfo = await prontoUserInfoRaw.json();
                         console.log(prontoUserInfo.data)
 
-                        if (prontoUserInfo.data.length < 1) {
+                        if (prontoUserInfo.data.length == 0) {
                             console.log("error grabbing user info from API");
                             location.replace("https://accounts.pronto.io/");
                         }
